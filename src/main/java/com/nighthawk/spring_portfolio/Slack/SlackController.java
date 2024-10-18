@@ -5,12 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class SlackController {
 
     @Autowired
-    private SlackMessageRepository messageRepository;
+    private MessageService messageService;
 
     @PostMapping("/slack/events")
     public ResponseEntity<String> handleSlackEvent(@RequestBody SlackEvent payload) {
@@ -20,23 +21,18 @@ public class SlackController {
         }
 
         try {
-            String eventType = payload.getEvent().getType();
+            SlackEvent.Event messageEvent = payload.getEvent();
+            String eventType = messageEvent.getType();
 
             if ("message".equals(eventType)) {
-                // Extract message details
-                String userId = payload.getEvent().getUser();
-                String text = payload.getEvent().getText();
-                String channelId = payload.getEvent().getChannel();
+                // Convert the message event to a JSON string
+                ObjectMapper objectMapper = new ObjectMapper();
+                String messageContent = objectMapper.writeValueAsString(messageEvent);
 
-                // Create a new SlackMessage object
-                SlackMessage message = new SlackMessage();
-                message.setUserId(userId);
-                message.setText(text);
-                message.setChannelId(channelId);
+                // Save the message content using MessageService
+                messageService.saveMessage(messageContent);
 
-                // Save to the database
-                messageRepository.save(message);
-                System.out.println("Message saved to database: " + message.getText());
+                System.out.println("Message saved to database: " + messageContent);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,60 +1,44 @@
 package com.nighthawk.spring_portfolio.Slack;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "slack_messages")
 public class SlackMessage {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String userId;
-    private String text;
-    private String channelId;
+    private LocalDateTime timestamp;
 
-    // Constructors
+    @Lob
+    private String messageBlob;
+
+    // Default constructor
     public SlackMessage() {
     }
 
-    public SlackMessage(String userId, String text, String channelId) {
-        this.userId = userId;
-        this.text = text;
-        this.channelId = channelId;
+    // Constructor with timestamp and messageBlob
+    public SlackMessage(LocalDateTime timestamp, String messageBlob) {
+        this.timestamp = timestamp;
+        this.messageBlob = messageBlob;
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
+    // Getters and setters
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getMessageBlob() {
+        return messageBlob;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
+    public void setMessageBlob(String messageBlob) {
+        this.messageBlob = messageBlob;
     }
 }
