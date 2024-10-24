@@ -8,16 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.client.RestTemplate;
-
+import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Map;
 import java.util.List;
 
 
 @RestController
 public class SlackController {
-
-    @Value("#{ @environment['SLACK_TOKEN'] }")
-    private String slackToken;
+    Dotenv dotenv = Dotenv.load();
+    private String slackToken = dotenv.get("SLACK_TOKEN");
     private final RestTemplate restTemplate;
 
     public SlackController(RestTemplate restTemplate) {
