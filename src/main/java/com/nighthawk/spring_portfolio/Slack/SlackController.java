@@ -19,12 +19,15 @@ public class SlackController {
     private String slackToken = dotenv.get("SLACK_TOKEN");
     private final RestTemplate restTemplate;
 
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private SlackMessageRepository messageRepository;
     public SlackController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
-    @Autowired
-    private SlackMessageRepository messageRepository;
-    private MessageService messageService;
+
     @GetMapping("/slack/")
     public ResponseEntity<List<SlackMessage>> returnSlackData() {
         // Fetch all messages from the SlackMessageRepository
