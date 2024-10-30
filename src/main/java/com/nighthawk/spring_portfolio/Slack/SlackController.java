@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.List;
 
 
+@SuppressWarnings("unused")
 @RestController
 public class SlackController {
     Dotenv dotenv = Dotenv.load();
