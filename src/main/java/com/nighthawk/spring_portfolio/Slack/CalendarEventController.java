@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,15 +14,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 @RestController
+@CrossOrigin(origins = "http://127.0.0.1:4100")
 @RequestMapping("/api/calendar")
 public class CalendarEventController {
-
     
     @Autowired
     private CalendarEventService calendarEventService;
 
-
     @PostMapping("/add")
+    public void addEventsFromSlackMessage(@RequestBody Map<String, String> jsonMap) {
+        LocalDate weekStartDate = LocalDate.parse("2024-10-30"); // Example start date
+        calendarEventService.parseSlackMessage(jsonMap, weekStartDate);
+    }
+
+    @PostMapping("/add_event")
     public void addEvents(@RequestBody Map<String, String> jsonMap) {
         if (jsonMap.containsKey("text")) {
             // Parse Slack message if "text" key exists
@@ -40,8 +46,6 @@ public class CalendarEventController {
             throw new IllegalArgumentException("Invalid input: Must include either 'text' for Slack messages or 'date' and 'title' for single event addition.");
         }
     }
-
-    
 
     @GetMapping("/events/{date}")
     public List<CalendarEvent> getEventsByDate(@PathVariable String date) {
